@@ -1,0 +1,37 @@
+bundle common example_sysctl_settings
+{
+  vars:
+      "file[sysctl]" string => "/tmp/sysctl.conf";
+      "mem_size_kb" string => "$(mon.value_mem_total)";
+
+      "calc_shmall" string => eval("$(mem_size_kb) * (0.85) * 1024 * 1024 * 1024 / 4096",
+                                   "math",
+                                   "infix");
+
+      "kern_shmall" string => format("%ld", "$(calc_shmall)");
+
+      "disable_list" slist => {
+                              "net.bridge.bridge-nf-call-ip6tables",
+                              "net.bridge.bridge-nf-call-iptables",
+                              "net.bridge.bridge-nf-call-arptables",
+                              "dev.rtc.max-user-freq",
+                              };
+
+    any::
+      #  isVM.isNewbuild::
+
+      "sysctl[vm.dirty_expire_centisecs]" string => "1000";
+      "sysctl[vm.dirty_ratio]" string => "10";
+      "sysctl[vm.dirty_background_ratio]" string => "5";
+      "sysctl[vm.overcommit_memory]" string => "1";
+      "sysctl[vm.swappiness]" string => "0";
+      "sysctl[kernel.shmall]" string => "500"; # DANGER WILL ROBINSON: NICK CHANGED THIS DEFAULT VALUE
+
+    # You probably want this to override the previous setting
+    isPhys.isNewbuild::
+      "sysctl[kernel.shmall]" string => " $(kern_shmall)";
+      
+    reports:
+      DEBUG|DEBUG_sysctl_knowledge::
+        "$(mem_size_kb)";
+}

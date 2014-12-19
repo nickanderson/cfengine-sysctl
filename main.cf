@@ -1,0 +1,32 @@
+# sysctl - manages sysctl values in /etc/sysctl.conf
+bundle agent manage_sysctl_conf_selective_present(settings)
+{
+  vars:
+    linux::
+      # Set the sysconfig file to operate on based on our settings bundle
+      "sysctl_conf_file"
+        string => "$($(settings).file[sysctl])";
+
+      # Copy the sysctl settings from our settings bundle
+      # Settings are expected to be defined in an array, or equivlent data
+      # container for example `sysctl[net.ipv4.ip_forward] string => "0"`
+      "sysctl_conf" data => mergedata("$(settings).sysctl");
+
+  files:
+    linux::
+      "$(sysctl_conf_file)"
+        perms => mog("400", "root", "root");
+
+      "$(sysctl_conf_file)"
+        create => "true",
+        edit_line => set_line_based("$(this.bundle).sysctl_conf", "=", "\s*=\s*", ".*", "\s*#\s*"),
+        classes => scoped_classes_generic("bundle", "sysctl_conf_file"),
+        comment =>  "sysctl settings can be very important to the performance of systems and applications";
+
+  reports:
+    DEBUG|DEBUG_manage_sysctl_conf::
+      "bundle:$(this.bundle) Activated";
+      "$(const.t)$(sysctl_conf_idx) = $(sysctl_conf[$(sysctl_conf_idx)])";
+      "$(const.t)Repaired: '$(sysctl_conf_file)' was corrected"
+        ifvarclass => "sysctl_conf_file_repaired";
+}
