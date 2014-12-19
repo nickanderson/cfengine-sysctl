@@ -7,7 +7,7 @@ bundle common sysctl_test_file_control
           {
           "$(masterfiles)/lib/$(sys.cf_version_major).$(sys.cf_version_minor)/stdlib.cf",
           "$(this.promise_dirname)/main.cf",
-          "$(this.promise_dirname)/example_settings.cf",
+          "$(this.promise_dirname)/test_example_settings.cf",
           };
 }
 
