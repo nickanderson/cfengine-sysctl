@@ -1,5 +1,5 @@
-# sysctl - manages sysctl values in /etc/sysctl.conf
 bundle agent manage_sysctl_conf_selective_present(settings)
+# @brief Manage individual settings in /etc/sysctl.conf and reload sysctl on repair
 {
   vars:
     linux::
@@ -12,6 +12,13 @@ bundle agent manage_sysctl_conf_selective_present(settings)
       # container for example `sysctl[net.ipv4.ip_forward] string => "0"`
       "sysctl_conf" data => mergedata("$(settings).sysctl");
 
+  classes:
+      # We want to know if we are editing the main sysctl.conf so that
+      # we know if we should attempt to reload the settings if it has
+      # been repaired
+      "using_default_sysctl_conf_file" 
+        expression => strcmp($(sysctl_conf_file), "/etc/sysctl.conf");
+
   files:
     linux::
       "$(sysctl_conf_file)"
@@ -22,6 +29,15 @@ bundle agent manage_sysctl_conf_selective_present(settings)
         edit_line => set_line_based("$(this.bundle).sysctl_conf", "=", "\s*=\s*", ".*", "\s*#\s*"),
         classes => scoped_classes_generic("bundle", "sysctl_conf_file"),
         comment =>  "sysctl settings can be very important to the performance of systems and applications";
+
+  commands:
+    linux.sysctl_conf_file_repaired::
+      # Reload sysctl settings if they have been modified
+      "$(paths.sysctl)"
+        args => "-p $(sysctl_conf_file)",
+        handle => "$(this.bundle)_sysctl_reload_after_repair",
+        comment => "After $(sysctl_conf_file) has been modified, sysctl must reload it for settings to apply.",
+        ifvarclass => "using_default_sysctl_conf_file";
 
   reports:
     DEBUG|DEBUG_manage_sysctl_conf::
