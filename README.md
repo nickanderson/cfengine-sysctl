@@ -3,7 +3,7 @@
 ## How to configure this policy
 
 First define a knowledge bundle. This is where you will configure variables
-that will ultimately be set into /etc/sysctl.conf. These variables could be
+that will ultimately be set into `/etc/sysctl.conf`. These variables could be
 populated directly in policy, or they could load their values from external
 data files. The more values you need to set the more it might make sense to
 push values out to data files. (JSON is most flexible and reccomended for
@@ -56,5 +56,11 @@ example below.
 
 ```cf3
   methods:
-      "Sysctl" usebundle => manage_sysctl_conf_selective_present(chevron_sysctl_settings);
+      # Converge settings for sysctl before using them
+      "converge_sysctl_settings"
+        usebundle => chevron_sysctl_settings;
+
+      # Manage /etc/sysctl.conf settings and reload if necessary
+      "sysctl_conf"
+        usebundle => manage_sysctl_conf_selective_present(chevron_sysctl_settings);
 ```
