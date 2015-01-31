@@ -1,0 +1,35 @@
+bundle agent sysctl_conf_inventory
+# @brief Inventory configuration settings found in sysctl.conf
+# Note: This is for the configured settings, not the currently active settings.
+{
+  vars:
+      "sysctl_conf" string => "/etc/sysctl.conf";
+      # Parse the file into a data structure
+      # Probably we wont have more than 100 entries, and probably the file
+      # wont be larger than 1MB.
+      "sysctl_conf_data" data => data_readstringarray($(sysctl_conf),
+                                                      "\s*#[^\n]*",
+                                                      "\s?+=\s?+",
+                                                      100,
+                                                      1M);
+
+      "sysctl_keys" slist => getindices("sysctl_conf_data");
+
+      # We have to iterate through each key value pair and create
+      # cfengine variables so that we can tag them for inventory
+      "sysctl[$(sysctl_keys)]" -> { "Mission Portal", "CFEngine Enterprise" }
+        string => "$(sysctl_conf_data[$(sysctl_keys)])",
+        meta => { "inventory", "attribute_name=Sysctl Config $(sysctl_keys)" },
+        comment => "Inventory each configured sysctl value so that we can
+                    report on it and view differences across the environment
+                    before we make policy changes.";
+
+  classes:
+      # I see no reason to define classes for each setting at this time.
+      # If you have a reason I would love to hear it!
+
+  reports:
+    DEBUG|DEBUG_sysctl|DEBUG_sysctl_conf_inventory::
+      "DEBUG $(this.bundle): Activated";
+      "$(const.t)$(sysctl_keys) = $(sysctl_conf_data[$(sysctl_keys)])";
+}

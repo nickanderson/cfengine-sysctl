@@ -1,0 +1,19 @@
+bundle agent sysctl_active_inventory_selective(data_interface_bundle)
+{
+  vars:
+      "sysctl" string => "/sbin/sysctl";
+
+      "sysctl_variables_data"
+        data => mergedata("$(data_interface_bundle).data");
+
+      "sysctl_tokens" slist => { "@($(data_interface_bundle).data[$(this.bundle)][tokens])" };
+
+      "inventory_sysctl_data[$(sysctl_tokens)]"
+        string => execresult("$(sysctl) -n $(sysctl_tokens)", "noshell"),
+        meta => { "inventory", "attribute_name=Sysctl Active $(sysctl_tokens)" };
+
+  reports:
+    DEBUG|DEBUG_sysctl|DEBUG_inventory_sysctl_active::
+      "DEBUG $(this.bundle): Activated";
+      "$(const.t)$(sysctl_tokens) = $(inventory_sysctl_data[$(sysctl_tokens)])";
+}

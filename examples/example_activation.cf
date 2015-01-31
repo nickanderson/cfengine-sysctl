@@ -1,0 +1,12 @@
+bundle agent example_activation
+{
+  methods:
+    "sysctl"
+      usebundle => sysctl_conf_selective_present_data_interface_pure_policy_example,
+      comment => "We want to converge the data before we start looking to make changes to the system.";
+
+    "sysctl"
+      usebundle => sysctl_conf_selective_present("sysctl_conf_selective_present_data_interface_pure_policy_example"),
+      comment => "We activate the sysctl implementation bundle and give it the name of our data interface bundle where
+                  it can go to source any data it needs.";
+}

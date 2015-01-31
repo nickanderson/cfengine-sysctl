@@ -1,0 +1,11 @@
+bundle agent sysctl_active_inventory_selective_pure_policy_example
+{
+  vars:
+    "data[sysctl_active_inventory_selective][tokens]"
+      slist => { "kernel.shmall" };
+
+    "sysctl_variables"
+        slist => {
+                   "kernel.shmall",
+                 };
+}

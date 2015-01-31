@@ -1,0 +1,6 @@
+# Manage Sysctl Values in /etc/sysctl.conf
+
+## How to configure this policy
+
+I am too lazy to explain it right now. Please look at examples/promises.cf for
+an example implementation.

@@ -1,0 +1,29 @@
+bundle common sysctl_def_file_control
+{
+  vars:
+    # SOME DAY!
+    #enable_sysctl_conf_selective_present::
+
+      "input[sysctl_conf_manage_selective_present]"
+        string => "$(this.promise_dirname)/../policy/sysctl_conf_manage_selective_present.cf",
+        comment => "The sysctl conf management implementation policy.
+                    Generally speaking you should not mess with this policy.";
+
+    #enable_sysctl_conf_inventory::
+      "input[sysctl_conf_inventory]" -> { "CFEngine Enterprise", "Mission Portal" }
+        string => "$(this.promise_dirname)/policy/sysctl_conf_inventory.cf",
+        comment => "Policy to inventory /etc/sysct.conf";
+
+    #enable_sysctl_active_inventory_selective::
+      "input[sysctl_active_inventory_selective]" -> { "CFEngine Enterprise", "Mission Portal" }
+        string => "$(this.promise_dirname)/policy/sysctl_active_inventory_selective.cf",
+        comment => "Policy to inventory current sysctl settings."; 
+
+    any::
+      "inputs" slist => getvalues(input);
+}
+
+body file control
+{
+  inputs => { @(sysctl_def_file_control.inputs) };
+}

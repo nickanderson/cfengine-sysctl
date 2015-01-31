@@ -1,0 +1,33 @@
+bundle agent sysctl_conf_manage_selective_present_data_interface_pure_policy_example
+{
+  vars:
+    # These are the default settings for all hosts. They can be overridden by
+    # more specific settings further down.
+    any::
+      "data[sysctl_conf_manage_selective_present][vm.dirty_expire_centisecs]" string => "1000";
+      "data[sysctl_conf_manage_selective_present][vm.dirty_ratio]" string => "10";
+      "data[sysctl_conf_manage_selective_present][vm.dirty_background_ratio]" string => "5";
+      "data[sysctl_conf_manage_selective_present][vm.overcommit_memory]" string => "1";
+      "data[sysctl_conf_manage_selective_present][vm.swappiness]" string => "0";
+      "data[sysctl_conf_manage_selective_present][kernel.shmall]" string => "500";
+
+    # Oracle Database Servers get kernel.small calculated based on the ammount of physical memory
+    role_oralce_database_server::
+      "mem_size_kb" string => "$(mon.value_mem_total)";
+      "calc_shmall" string => eval("$(mem_size_kb) * (0.85) * 1024 * 1024 * 1024 / 4096",
+                                   "math",
+                                   "infix");
+
+      "kern_shmall" string => format("%ld", "$(calc_shmall)");
+      "data[sysctl_conf_manage_selective_present][kernel.shmall]" string => " $(kern_shmall)";
+
+    any::
+        # I am only using this list for printing debug reports
+        "sysctl_tokens" slist => getindices("data[sysctl_conf_manage_selective_present]");
+      
+    reports:
+      DEBUG|DEBUG_sysctl|DEBUG_sysctl_conf_manage_selective_present_data_interface_pure_policy_example::
+        "DEBUG $(this.bundle): Activated";
+        "DEBUG $(this.bundle): '$(sysctl_tokens)' = '$(data[sysctl_conf_manage_selective_present][$(sysctl_tokens)])'";
+
+}

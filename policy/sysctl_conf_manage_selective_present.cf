@@ -1,28 +1,39 @@
-bundle agent manage_sysctl_conf_selective_present(settings)
+bundle agent sysctl_conf_manage_selective_present(data_interface_bundle)
 # @brief Manage individual settings in /etc/sysctl.conf and reload sysctl on repair
 {
   vars:
     linux::
-      # Set the sysconfig file to operate on based on our settings bundle
+      # I don't think there is great value in adding the additional complexity
+      # of allowing the user to specicy tis.
       "sysctl_conf_file"
-        string => "$($(settings).file[sysctl])";
+        string => "/etc/sysctl.conf";
 
       # Copy the sysctl settings from our settings bundle
       # Settings are expected to be defined in an array, or equivlent data
       # container for example `sysctl[net.ipv4.ip_forward] string => "0"`
-      "sysctl_conf" data => mergedata("$(settings).sysctl");
+      # I could not get this to work using mergedata
+      #"sysctl_conf" data => mergedata("$(data_interface_bundle).data[$(this.bundle)]");
+
+      # Rebuild an array to work with based on the data provided
+      "sysctl_tokens" slist => getindices("$(data_interface_bundle).data[$(this.bundle)]");
+      "sysctl_conf[$(sysctl_tokens)]" string => "$($(data_interface_bundle).data[$(this.bundle)][$(sysctl_tokens)])";
 
   classes:
+    linux::
       # We want to know if we are editing the main sysctl.conf so that
       # we know if we should attempt to reload the settings if it has
-      # been repaired
-      "using_default_sysctl_conf_file" 
+      # been repaired. This is simply a protection in case we later decide to
+      # allow the sysctl config file to be tunable.
+      "using_default_sysctl_conf_file"
         expression => strcmp($(sysctl_conf_file), "/etc/sysctl.conf");
 
   files:
     linux::
+      # We want to keep the permissions tight, if different permissions are appropriate please cite the source.
       "$(sysctl_conf_file)"
-        perms => mog("400", "root", "root");
+        perms => mog("400", "root", "root"),
+        comment => "According to http://www.stigviewer.com/stig/red_hat_enterprise_linux_5/2014-07-07/finding/V-4336
+                    /etc/sysctl.conf should have permissions less than 600.";
 
       "$(sysctl_conf_file)"
         create => "true",
@@ -40,8 +51,8 @@ bundle agent manage_sysctl_conf_selective_present(settings)
         ifvarclass => "using_default_sysctl_conf_file";
 
   reports:
-    DEBUG|DEBUG_manage_sysctl_conf::
-      "bundle:$(this.bundle) Activated";
+    DEBUG|DEBUG_sysctl_conf_manage_selective_present::
+      "DEBUG $(this.bundle): Activated";
       "$(const.t)$(sysctl_conf_idx) = $(sysctl_conf[$(sysctl_conf_idx)])";
       "$(const.t)Repaired: '$(sysctl_conf_file)' was corrected"
         ifvarclass => "sysctl_conf_file_repaired";

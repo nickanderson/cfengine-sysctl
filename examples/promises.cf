@@ -1,0 +1,84 @@
+body common control
+{
+  inputs => { @(inputs.inputs) };
+  bundlesequence => { "service_catalogue" };
+}
+
+# Its nice to use a bundle to define inputs because you can use
+# $(this.promise_dirname) and load files relative the the current policy. This
+# can make the policy more modular and easier to integrate into various policy
+# sets.
+bundle common inputs
+{
+  vars:
+    any::
+      "masterfiles" string => "/var/cfengine/masterfiles";
+
+    nickanderson_ThinkPad_W520::
+      "masterfiles" string => "/home/nickanderson/CFEngine/masterfiles";
+
+    any::
+      "input[stdlib]"
+        string => "$(masterfiles)/lib/$(sys.cf_version_major).$(sys.cf_version_minor)/stdlib.cf",
+        comment => "The cfengine standard library has many useful bodies and bundles.";
+
+      "input[sysctl_conf_manage_selective_present_data_interface_pure_policy_example]"
+        string => "$(this.promise_dirname)/sysctl_conf_manage_selective_present_data_interface_pure_policy_example.cf",
+        comment => "An example showing how to provide configuration details in pure policy.
+                    This would be the part you fiddle with most often.";
+
+      "input[sysctl_conf_manage_selective_present]"
+        string => "$(this.promise_dirname)/../policy/sysctl_conf_manage_selective_present.cf",
+        comment => "The sysctl conf management implementation policy.
+                    Generally you would not mess with the policy here.";
+
+      "input[sysctl_conf_inventory]" -> { "CFEngine Enterprise", "Mission Portal" }
+        string => "$(this.promise_dirname)/../policy/sysctl_conf_inventory.cf",
+        comment => "Policy to inventory /etc/sysct.conf";
+
+
+      "input[sysctl_active_inventory_selective_pure_policy_example]" -> { "CFEngine Enterprise", "Mission Portal" }
+        string => "$(this.promise_dirname)/sysctl_active_inventory_selective_pure_policy_example.cf",
+        comment => "Policy to inventory current sysctl settings."; 
+
+      "input[sysctl_active_inventory_selective]" -> { "CFEngine Enterprise", "Mission Portal" }
+        string => "$(this.promise_dirname)/../policy/sysctl_active_inventory_selective.cf",
+        comment => "Policy to inventory current sysctl settings."; 
+
+      "inputs"
+        slist => getvalues(input),
+        comment => "We need to build a list that can be included by body common (or file) control";
+}
+
+bundle agent service_catalogue
+{
+  methods:
+    # Before we deploy policy to manage something, it might be a good idea to
+    # deploy policy to report on the current values.
+
+    enable_sysctl_active_inventory_selective::
+      "sysctl"
+        usebundle => "sysctl_active_inventory_selective_pure_policy_example",
+        comment => "It's important to converge our data before using it.";
+
+      "sysctl"
+        usebundle => sysctl_active_inventory_selective("sysctl_active_inventory_selective_pure_policy_example");
+
+    enable_sysctl_conf_inventory::
+      "sysctl"
+        usebundle => "sysctl_conf_inventory";
+
+    enable_sysctl_conf_manage_selective_present::
+      "sysctl"
+        usebundle => sysctl_conf_manage_selective_present_data_interface_pure_policy_example,
+        comment => "We want to converge the data before we start looking to make changes to the system.";
+
+    # Note this was designed to not require multiple activations. ideally your
+    # data interface provides all data reqired across all stakeholders related
+    # to sysctl settings. But it is also perfectly valid to activate multiple
+    # times with different data interfaces.
+      "sysctl"
+        usebundle => sysctl_conf_manage_selective_present("sysctl_conf_manage_selective_present_data_interface_pure_policy_example"),
+        comment => "We activate the sysctl implementation bundle and give it the name of our data interface bundle where
+                  it can go to source any data it needs.";
+}
