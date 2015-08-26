@@ -5,13 +5,13 @@ bundle agent sysctl_conf_inventory
   vars:
       "sysctl_conf" string => "/etc/sysctl.conf";
       # Parse the file into a data structure
-      # Probably we wont have more than 100 entries, and probably the file
-      # wont be larger than 1MB.
-      "sysctl_conf_data" data => data_readstringarray($(sysctl_conf),
-                                                      "\s*#[^\n]*",
-                                                      "\s?+=\s?+",
-                                                      100,
-                                                      1M);
+      "sysctl_conf_data"
+        data => data_readstringarray($(sysctl_conf),
+                                     "\s*#[^\n]*",
+                                     "\s?+=\s?+",
+                                     inf,
+                                     inf),
+        ifvarclass => fileexists( $(sysctl_conf) );
 
       "sysctl_keys" slist => getindices("sysctl_conf_data");
 

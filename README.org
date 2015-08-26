@@ -1,6 +1,52 @@
-# Manage Sysctl Values in /etc/sysctl.conf
+* Sysctl - Policy related to sysctl
 
 ## How to configure this policy
 
 I am too lazy to explain it right now. Please look at examples/promises.cf for
 an example implementation.
+
+** How to integrate into your policy
+First get the policy into your masterfiles
+
+#+begin_src sh
+  cd /tmp
+  export MASTERFILES=/var/cfengine/masterfiles
+  git clone https://github.com/nickanderson/cfengine-sysctl.git
+  cd cfengine-sysctl
+  mkdir -p $MASTERFILES/services/sysctl
+  git archive master | tar -x -C $MASTERFILES/services/sysctl
+#+end_src
+
+Include def.cf into your inputs
+
+#+begin_src cfengine
+  body common control
+  {
+        inputs => {
+                    # Reports
+                    @(cfengine_reports.inputs),
+
+                   "services/sysctl/def.cf",
+
+                    # autorun system
+                    @(services_autorun.inputs),
+        };
+  }
+#+end_src
+
+Activate the features you want in the proper context.
+
+For example to inventory the settings in /etc/sysctl.conf on all linux
+nodes:
+
+#+begin_src cfengine3
+  bundle agent main
+  # User Defined Service Catalogue
+  {
+    methods:
+      # Activate your custom policies here
+      linux::
+        "Inventory /etc/sysctl.conf settings"
+          usebundle => sysctl_conf_inventory;
+  }
+#+end_src
