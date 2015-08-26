@@ -5,7 +5,7 @@ bundle common sysctl_def_file_control
     #enable_sysctl_conf_selective_present::
 
       "input[sysctl_conf_manage_selective_present]"
-        string => "$(this.promise_dirname)/../policy/sysctl_conf_manage_selective_present.cf",
+        string => "$(this.promise_dirname)/policy/sysctl_conf_manage_selective_present.cf",
         comment => "The sysctl conf management implementation policy.
                     Generally speaking you should not mess with this policy.";
 
