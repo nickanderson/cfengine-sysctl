@@ -7,7 +7,7 @@ bundle agent sysctl_conf_inventory
       # Parse the file into a data structure
       "sysctl_conf_data"
         data => data_readstringarray($(sysctl_conf),
-                                     "\s*#[^\n]*",
+                                     "[ \t]*#[^\n]*",
                                      "\s?+=\s?+",
                                      inf,
                                      inf),
