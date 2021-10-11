@@ -1,22 +1,22 @@
-bundle agent kernel_settings_sysctl_conf(data_interface_bundle)
+bundle agent kernel_settings_sysctl_conf
 # @brief Manage individual settings in /etc/sysctl.conf and reload sysctl on repair
 {
   vars:
     linux::
       # I don't think there is great value in adding the additional complexity
-      # of allowing the user to specicy tis.
-      "sysctl_conf_file"
-        string => "/etc/sysctl.conf";
+      # of allowing the user to specify tis.
+      "_conf_file"
+        string => "/etc/sysctl.conf",
+        unless => isvariable( "_conf_file" );
 
-      # Copy the sysctl settings from our settings bundle
-      # Settings are expected to be defined in an array, or equivlent data
-      # container for example `sysctl[net.ipv4.ip_forward] string => "0"`
-      # I could not get this to work using mergedata
-      #"sysctl_conf" data => mergedata("$(data_interface_bundle).data[$(this.bundle)]");
+      "_desired_conf_data_variable"
+        string => "$(this.namespace).$(this.bundle)._desired_conf_data",
+        unless => isvariable( "_desired_conf_data_variable" );
 
-      # Rebuild an array to work with based on the data provided
-      "sysctl_tokens" slist => getindices("$(data_interface_bundle).data[$(this.bundle)]");
-      "sysctl_conf[$(sysctl_tokens)]" string => "$($(data_interface_bundle).data[$(this.bundle)][$(sysctl_tokens)])";
+      "_desired_conf_data"
+        data => '{ "vm.swappiness": "10"
+        }',
+        unless => isvariable( "_desired_conf_data" );
 
   classes:
     linux::
@@ -24,30 +24,30 @@ bundle agent kernel_settings_sysctl_conf(data_interface_bundle)
       # we know if we should attempt to reload the settings if it has
       # been repaired. This is simply a protection in case we later decide to
       # allow the sysctl config file to be tunable.
-      "using_default_sysctl_conf_file"
-        expression => strcmp($(sysctl_conf_file), "/etc/sysctl.conf");
+      "using_default__conf_file"
+        expression => strcmp($(_conf_file), "/etc/sysctl.conf");
 
   files:
     linux::
       # We want to keep the permissions tight, if different permissions are appropriate please cite the source.
-      "$(sysctl_conf_file)"
+      "$(_conf_file)"
         perms => mog("400", "root", "root"),
         comment => "According to http://www.stigviewer.com/stig/red_hat_enterprise_linux_5/2014-07-07/finding/V-4336
                     /etc/sysctl.conf should have permissions less than 600.";
 
-      "$(sysctl_conf_file)"
+      "$(_conf_file)"
         create => "true",
-        edit_line => set_line_based("$(this.bundle).sysctl_conf", "=", "\s*=\s*", ".*", "\s*#\s*"),
-        classes => scoped_classes_generic("bundle", "sysctl_conf_file"),
+        edit_line => set_line_based("$(_desired_conf_data_variable)", "=", "\s*=\s*", ".*", "\s*#\s*"),
+        classes => scoped_classes_generic("bundle", "_conf_file"),
         comment =>  "sysctl settings can be very important to the performance of systems and applications";
 
   commands:
-    linux.sysctl_conf_file_repaired::
+    linux._conf_file_repaired::
       # Reload sysctl settings if they have been modified
       "$(paths.sysctl)"
-        args => "-p $(sysctl_conf_file)",
+        args => "-p $(_conf_file)",
         handle => "$(this.bundle)_sysctl_reload_after_repair",
-        comment => "After $(sysctl_conf_file) has been modified, sysctl must reload it for settings to apply.",
-        ifvarclass => "using_default_sysctl_conf_file";
+        comment => "After $(_conf_file) has been modified, sysctl must reload it for settings to apply.",
+        ifvarclass => "using_default__conf_file";
 
 }
