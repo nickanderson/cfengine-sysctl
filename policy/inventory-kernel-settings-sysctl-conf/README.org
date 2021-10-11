@@ -2,4 +2,6 @@
 
 Inventory the current configuration of =/etc/sysctl.conf=.
 
+*Note:* This policy does /not/ currently inventory configuration directories (e.g. =/usr/lib/sysctl.d/=, =/run/sysctl.d/=, =/etc/sysctl.d/=).
+
 
