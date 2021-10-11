@@ -7,7 +7,8 @@
         "commit":"",
         "subdirectory": "policy/inventory-kernel-settings-sysctl-current",
         "steps": [
-            "copy ./ services/inventory-kernel-settings-sysctl-current/",
+            "copy ./main.cf services/inventory-kernel-settings-sysctl-current/",
+            "copy ./README.org services/inventory-kernel-settings-sysctl-current/",
             "json ./cfbs/def.json def.json"
         ]
     },
@@ -19,7 +20,8 @@
         "commit":"",
         "subdirectory": "policy/inventory-kernel-settings-sysctl-conf",
         "steps": [
-            "copy ./ services/inventory-kernel-settings-sysctl-conf/",
+            "copy ./main.cf services/inventory-kernel-settings-sysctl-conf/",
+            "copy ./README.org services/inventory-kernel-settings-sysctl-conf/",
             "json ./cfbs/def.json def.json"
         ]
     },
@@ -31,7 +33,8 @@
         "commit":"",
         "subdirectory": "policy/kernel-settings-sysctl-conf",
         "steps": [
-            "copy ./ services/kernel-settings-sysctl-conf/",
+            "copy ./main.cf services/kernel-settings-sysctl-conf/",
+            "copy ./README.org services/kernel-settings-sysctl-conf/",
             "json ./cfbs/def.json def.json"
         ]
     }
