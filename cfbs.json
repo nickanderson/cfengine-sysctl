@@ -1,0 +1,39 @@
+{
+    "inventory-kernel-settings-sysctl-current": {
+        "description":"Inventory sysctl settings current state.",
+        "tags":[ "inventory", "sysctl" ],
+        "by":"https://github.com/nickanderson",
+        "version":"1.0.0",
+        "commit":"",
+        "subdirectory": "policy/inventory-kernel-settings-sysctl-current",
+        "steps": [
+            "copy ./ services/inventory-kernel-settings-sysctl-current/",
+            "json ./cfbs/def.json def.json"
+        ]
+    },
+    "inventory-kernel-settings-sysctl-conf": {
+        "description":"Inventory settings from /etc/sysctl.conf.",
+        "tags":[ "inventory", "sysctl" ],
+        "by":"https://github.com/nickanderson",
+        "version":"1.0.0",
+        "commit":"",
+        "subdirectory": "policy/inventory-kernel-settings-sysctl-conf",
+        "steps": [
+            "copy ./ services/inventory-kernel-settings-sysctl-conf/",
+            "json ./cfbs/def.json def.json"
+        ]
+    },
+    "kernel-settings-sysctl-conf": {
+        "description":"Manage settings in /etc/sysctl.conf.",
+        "tags":[ "sysctl" ],
+        "by":"https://github.com/nickanderson",
+        "version":"1.0.0",
+        "commit":"",
+        "subdirectory": "policy/kernel-settings-sysctl-conf",
+        "steps": [
+            "copy ./ services/kernel-settings-sysctl-conf/",
+            "json ./cfbs/def.json def.json"
+        ]
+    }
+
+}

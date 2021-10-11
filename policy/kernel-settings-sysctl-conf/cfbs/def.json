@@ -1,0 +1,6 @@
+{
+    "inputs": [ "services/kernel-settings-sysctl-conf/main.cf" ],
+    "vars": {
+        "control_common_bundlesequence_end": [ "kernel_settings_sysctl_conf" ]
+    }
+}
