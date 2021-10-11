@@ -1,4 +1,4 @@
-bundle agent sysctl_conf_inventory
+bundle agent inventory_kernel_settings_sysctl_conf
 # @brief Inventory configuration settings found in sysctl.conf
 # Note: This is for the configured settings, not the currently active settings.
 {
@@ -23,13 +23,4 @@ bundle agent sysctl_conf_inventory
         comment => "Inventory each configured sysctl value so that we can
                     report on it and view differences across the environment
                     before we make policy changes.";
-
-  classes:
-      # I see no reason to define classes for each setting at this time.
-      # If you have a reason I would love to hear it!
-
-  reports:
-    DEBUG|DEBUG_sysctl|DEBUG_sysctl_conf_inventory::
-      "DEBUG $(this.bundle): Activated";
-      "$(const.t)$(sysctl_keys) = $(sysctl_conf_data[$(sysctl_keys)])";
 }

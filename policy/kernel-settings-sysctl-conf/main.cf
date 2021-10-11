@@ -1,4 +1,4 @@
-bundle agent sysctl_conf_manage_selective_present(data_interface_bundle)
+bundle agent kernel_settings_sysctl_conf(data_interface_bundle)
 # @brief Manage individual settings in /etc/sysctl.conf and reload sysctl on repair
 {
   vars:
@@ -50,10 +50,4 @@ bundle agent sysctl_conf_manage_selective_present(data_interface_bundle)
         comment => "After $(sysctl_conf_file) has been modified, sysctl must reload it for settings to apply.",
         ifvarclass => "using_default_sysctl_conf_file";
 
-  reports:
-    DEBUG|DEBUG_sysctl_conf_manage_selective_present::
-      "DEBUG $(this.bundle): Activated";
-      "$(const.t)$(sysctl_conf_idx) = $(sysctl_conf[$(sysctl_conf_idx)])";
-      "$(const.t)Repaired: '$(sysctl_conf_file)' was corrected"
-        ifvarclass => "sysctl_conf_file_repaired";
 }

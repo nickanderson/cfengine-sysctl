@@ -1,0 +1,11 @@
+bundle agent inventory_sysctl_current
+# @brief Inventory current sysctl settings
+{
+  vars:
+      "_sysctl_d" data => data_sysctlvalues();
+      "_sysctl_d_i" slist => getindices( @(sysctl_d) );
+
+      "inventory_sysctl[$(_sysctl_d_i)]"
+        string => "$(_sysctl_d[$(_sysctl_d_i)])",
+        meta => { "inventory", "attribute_name=Sysctl $(_sysctl_d_i)" };
+}
