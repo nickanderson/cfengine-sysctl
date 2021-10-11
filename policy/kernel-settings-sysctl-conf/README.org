@@ -2,9 +2,28 @@
 
 Manage the current configuration of =/etc/sysctl.conf= while keeping running settings in sync.
 
+*Note:* This policy currently only ensures that specified settings are present. No statement is made about settings not specified. Thus  configuration in the file will remain untouched if the key is not specified in the desired data. For example, if =vm.swappiness= is set to =10= in =/etc/sysctl.conf and vm.swappiness= is /not/ specified the desired configuration data the existing entry for =vm.swappiness= will be left untouched.
+
 * Installation via cfbs
 
 #+begin_src sh
   cfbs add kernel-settings-sysctl-conf
 #+end_src
 
+* Example Configuration
+
+- (Optionally) Specify the fully qualified name of the variable that will hold complete configuration data.
+  - e.g. =default_kernel_settings_sysctl_conf._desired_conf_data_variable= = =data:variables.my_sysctl=
+
+- Define the complete configuration data desired.
+  - e.g. =data:variables.my_sysctl= = ={ "vm.swappiness": "10", "fs.protected_hardlinks": "1",
+"fs.protected_symlinks" : "1" }=
+
+
+** Example Configuration via Host Specific data in Mission Portal   :ATTACH:
+:PROPERTIES:
+:ID:       88a9b1e8-418f-499c-96dd-6ff836ff821e
+:END:
+
+#+DOWNLOADED: file:///home/nickanderson/Pictures/screenshots/2021-10-11_12-45-41.png @ 2021-10-11 12:46:01
+[[attachment:2021-10-11_12-46-01_2021-10-11_12-45-41.png]]
