@@ -4,4 +4,10 @@ Inventory the current configuration of =/etc/sysctl.conf=.
 
 *Note:* This policy does /not/ currently inventory configuration directories (e.g. =/usr/lib/sysctl.d/=, =/run/sysctl.d/=, =/etc/sysctl.d/=).
 
+* Installation via cfbs
+
+#+begin_src sh
+  cfbs add inventory-kernel-settings-sysctl-conf
+#+end_src
+
 

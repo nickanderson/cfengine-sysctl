@@ -2,3 +2,9 @@
 
 Manage the current configuration of =/etc/sysctl.conf= while keeping running settings in sync.
 
+* Installation via cfbs
+
+#+begin_src sh
+  cfbs add kernel-settings-sysctl-conf
+#+end_src
+

@@ -1,5 +1,9 @@
-#+Title: Inventory current sysctl state
+#+Title: Inventory current sysctl current
 
 Inventory the current state of each sysctl token. (~sysctl -a~).
 
+* Installation via cfbs
 
+#+begin_src sh
+  cfbs add inventory-kernel-settings-sysctl-current
+#+end_src

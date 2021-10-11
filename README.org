@@ -1,20 +1,16 @@
-* Sysctl - Policy related to sysctl
+#+Title: Sysctl - Policy related to sysctl
 
-## How to configure this policy
+- [[./policy/inventory-kernel-settings-sysctl-current][inventory-kernel-settings-sysctl-current]] :: Policy to inventory the current state of easy sysctl token.
+- [[./policy/inventory-kernel-settings-sysctl-conf][inventory-kernel-settings-sysctl-conf]] :: Policy to inventory the current state of =/etc/sysctl.conf=.
+- [[./policy/kernel-settings-sysctl-conf][kernel-settings-sysctl-conf]] :: Policy to manage =/etc/sysctl.conf=.
 
-I am too lazy to explain it right now. Please look at examples/promises.cf for
-an example implementation.
-
-** How to integrate into your policy
-First get the policy into your masterfiles
+* Screenshots
 
 #+begin_src sh
-  cd /tmp
-  export MASTERFILES=/var/cfengine/masterfiles
-  git clone https://github.com/nickanderson/cfengine-sysctl.git
-  cd cfengine-sysctl
-  mkdir -p $MASTERFILES/services/sysctl
-  git archive master | tar -x -C $MASTERFILES/services/sysctl
+  cfbs search inventory-kernel-settings-sysctl-current
+#+end_src
+#+begin_src sh
+  cfbs search inventory-kernel-settings-sysctl-current
 #+end_src
 
 Include def.cf into your inputs
