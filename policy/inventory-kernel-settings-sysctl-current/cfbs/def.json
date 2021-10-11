@@ -1,6 +1,6 @@
 {
     "inputs": [ "services/inventory-kernel-settings-sysctl-current/main.cf" ],
     "vars": {
-        "control_common_bundlesequence_classification": [ "inventory_kernel_settings_sysctl_conf" ]
+        "control_common_bundlesequence_classification": [ "inventory_kernel_settings_sysctl_current" ]
     }
 }
