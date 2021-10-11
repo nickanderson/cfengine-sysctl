@@ -1,4 +1,4 @@
-bundle agent inventory_sysctl_current
+bundle agent inventory_kernel_settings_sysctl_current
 # @brief Inventory current sysctl settings
 {
   vars:
