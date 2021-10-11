@@ -1,0 +1,4 @@
+#+Title: Manage /etc/sysctl.conf
+
+Manage the current configuration of =/etc/sysctl.conf= while keeping running settings in sync.
+

@@ -1,0 +1,5 @@
+#+Title: Inventory current sysctl state
+
+Inventory the current state of each sysctl token. (~sysctl -a~).
+
+

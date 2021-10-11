@@ -1,0 +1,5 @@
+#+Title: Inventory /etc/sysctl.conf
+
+Inventory the current configuration of =/etc/sysctl.conf=.
+
+
