@@ -10,11 +10,11 @@ bundle agent kernel_settings_sysctl_conf
         unless => isvariable( "_conf_file" );
 
       "_desired_conf_data_variable"
-        string => "$(this.namespace).$(this.bundle)._desired_conf_data",
+        string => "$(this.namespace):$(this.bundle)._desired_conf_data",
         unless => isvariable( "_desired_conf_data_variable" );
 
       "_desired_conf_data"
-        data => '{ "vm.swappiness": "10"
+        data => '{ "vm.swappiness": "20"
         }',
         unless => isvariable( "_desired_conf_data" );
 
