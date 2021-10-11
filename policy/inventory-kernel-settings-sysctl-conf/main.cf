@@ -1,26 +1,18 @@
 bundle agent inventory_kernel_settings_sysctl_conf
-# @brief Inventory configuration settings found in sysctl.conf
+# @brief Inventory configuration settings found in /etc/sysctl.conf
 # Note: This is for the configured settings, not the currently active settings.
 {
   vars:
-      "sysctl_conf" string => "/etc/sysctl.conf";
-      # Parse the file into a data structure
-      "sysctl_conf_data"
-        data => data_readstringarray($(sysctl_conf),
-                                     "\s*#[^\n]*",
-                                     "\s?+=\s?+",
-                                     inf,
-                                     inf),
-        ifvarclass => fileexists( $(sysctl_conf) );
+      "_conf_file" string => "/etc/sysctl.conf";
+      "_d"
+        data => readenvfile( $(_conf_file), inf ),
+        ifvarclass => fileexists( $(_conf_file) );
+      "_d_i" slist => getindices( @(_d) );
 
-      "sysctl_keys" slist => getindices("sysctl_conf_data");
-
-      # We have to iterate through each key value pair and create
-      # cfengine variables so that we can tag them for inventory
-      "sysctl[$(sysctl_keys)]" -> { "Mission Portal", "CFEngine Enterprise" }
-        string => "$(sysctl_conf_data[$(sysctl_keys)])",
-        meta => { "inventory", "attribute_name=Sysctl Config $(sysctl_keys)" },
-        comment => "Inventory each configured sysctl value so that we can
-                    report on it and view differences across the environment
-                    before we make policy changes.";
+      "sysctl[$(_d_i)]"
+        string => "$(_d[$(_d_i)])",
+        meta => { "inventory", "attribute_name=/etc/sysctl.conf $(_d_i)" },
+        comment => concat( "Inventory each configured sysctl value so that we can",
+                           " report on it and view differences across the environment",
+                           " before we make policy changes.");
 }
