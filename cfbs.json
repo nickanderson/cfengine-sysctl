@@ -1,5 +1,5 @@
 {
-  "modules": {
+  "index": {
     "inventory-kernel-settings-sysctl-current": {
       "description": "Inventory sysctl settings current state.",
       "tags": ["inventory", "sysctl"],
