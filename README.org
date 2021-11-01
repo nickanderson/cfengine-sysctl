@@ -4,3 +4,15 @@
 - [[./policy/inventory-kernel-settings-sysctl-conf][inventory-kernel-settings-sysctl-conf]] :: Policy to inventory the current state of =/etc/sysctl.conf=.
 - [[./policy/kernel-settings-sysctl-conf][kernel-settings-sysctl-conf]] :: Policy to manage =/etc/sysctl.conf=.
 
+* Installation via cfbs
+
+#+begin_example
+❯ cfbs search sysctl
+inventory-kernel-settings-sysctl-conf - Inventory settings from /etc/sysctl.conf.
+inventory-kernel-settings-sysctl-current - Inventory sysctl settings current state.
+kernel-settings-sysctl-conf - Manage settings in /etc/sysctl.conf.
+❯ cfbs add inventory-kernel-settings-sysctl-conf inventory-kernel-settings-sysctl-current kernel-settings-sysctl-conf
+Added module: inventory-kernel-settings-sysctl-conf
+Added module: inventory-kernel-settings-sysctl-current
+Added module: kernel-settings-sysctl-conf
+#+end_example
