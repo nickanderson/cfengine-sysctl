@@ -13,12 +13,27 @@ Manage the current configuration of =/etc/sysctl.conf= while keeping running set
 * Example Configuration
 
 - (Optionally) Specify the fully qualified name of the variable that will hold complete configuration data.
-  - e.g. =default_kernel_settings_sysctl_conf._desired_conf_data_variable= = =data:variables.my_sysctl=
+  - e.g. =default:kernel_settings_sysctl_conf._desired_conf_data_variable= = =data:variables.my_sysctl=
 
 - Define the complete configuration data desired.
   - e.g. =data:variables.my_sysctl= = ={ "vm.swappiness": "10", "fs.protected_hardlinks": "1",
 "fs.protected_symlinks" : "1" }=
 
+** Example Configuration via Augments
+
+In CFEngine version 3.18.0 or greater the [[https://docs.cfengine.com/docs/3.18/reference-language-concepts-augments.html#variables][/variables/ key]] in [[https://docs.cfengine.com/docs/3.18/reference-language-concepts-augments.html][Augments]] supports targeting specific variables in any namespace or bundle.
+
+For example, here we set =data:variables.my_sysctl= and configure that variable for use by =kernel_settings_sysctl_conf=.
+
+#+begin_src json
+  {
+      "variables": {
+          "default:kernel_settings_sysctl_conf._desired_conf_data_variable": "data:variables.my_sysctl",
+          "data:variables.my_sysctl": { "vm.swappiness": "10", "fs.protected_hardlinks": "1",
+                                        "fs.protected_symlinks" : "1" }
+      }
+  }
+#+end_src
 
 ** Example Configuration via Host Specific data in Mission Portal   :ATTACH:
 :PROPERTIES:
@@ -27,3 +42,4 @@ Manage the current configuration of =/etc/sysctl.conf= while keeping running set
 
 #+DOWNLOADED: file:///home/nickanderson/Pictures/screenshots/2021-10-11_12-45-41.png @ 2021-10-11 12:46:01
 [[data/88/a9b1e8-418f-499c-96dd-6ff836ff821e/2021-10-11_12-46-01_2021-10-11_12-45-41.png]]
+
