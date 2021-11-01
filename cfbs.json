@@ -1,11 +1,12 @@
 {
-  "index": {
+  "name": "sysctl",
+  "description": "Inventory and manage sysctl current and persistent states.",
+  "provides": {
     "inventory-kernel-settings-sysctl-current": {
       "description": "Inventory sysctl settings current state.",
       "tags": ["inventory", "sysctl"],
       "by": "https://github.com/nickanderson",
-      "version": "1.0.0",
-      "commit": "",
+      "repo": "https://github.com/nickanderson/cfengine-sysctl",
       "subdirectory": "policy/inventory-kernel-settings-sysctl-current",
       "steps": [
         "copy ./main.cf services/inventory-kernel-settings-sysctl-current/",
@@ -17,8 +18,7 @@
       "description": "Inventory settings from /etc/sysctl.conf.",
       "tags": ["inventory", "sysctl"],
       "by": "https://github.com/nickanderson",
-      "version": "1.0.0",
-      "commit": "",
+      "repo": "https://github.com/nickanderson/cfengine-sysctl",
       "subdirectory": "policy/inventory-kernel-settings-sysctl-conf",
       "steps": [
         "copy ./main.cf services/inventory-kernel-settings-sysctl-conf/",
@@ -30,8 +30,7 @@
       "description": "Manage settings in /etc/sysctl.conf.",
       "tags": ["sysctl"],
       "by": "https://github.com/nickanderson",
-      "version": "1.0.0",
-      "commit": "",
+      "repo": "https://github.com/nickanderson/cfengine-sysctl",
       "subdirectory": "policy/kernel-settings-sysctl-conf",
       "steps": [
         "copy ./main.cf services/kernel-settings-sysctl-conf/",
