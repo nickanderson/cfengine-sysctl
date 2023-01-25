@@ -35,11 +35,9 @@ For example, here we set =data:variables.my_sysctl= and configure that variable 
   }
 #+end_src
 
-** Example Configuration via Host Specific data in Mission Portal   :ATTACH:
+** Example Configuration via Host Specific data in Mission Portal
 :PROPERTIES:
 :ID:       88a9b1e8-418f-499c-96dd-6ff836ff821e
 :END:
 
-#+DOWNLOADED: file:///home/nickanderson/Pictures/screenshots/2021-10-11_12-45-41.png @ 2021-10-11 12:46:01
-[[data/88/a9b1e8-418f-499c-96dd-6ff836ff821e/2021-10-11_12-46-01_2021-10-11_12-45-41.png]]
-
+[[https://raw.githubusercontent.com/nickanderson/cfengine-sysctl/master/policy/kernel-settings-sysctl-conf/data/88/a9b1e8-418f-499c-96dd-6ff836ff821e/2021-10-11_12-46-01_2021-10-11_12-45-41.png]]
